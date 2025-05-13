@@ -4,9 +4,7 @@ import com.bibireden.playerex.registry.PlayerEXMenuRegistry;
 import com.mystichorizonsmc.playerexrebirth.PlayerExRebirth;
 import com.mystichorizonsmc.playerexrebirth.client.config.ClientPrestigeConfig;
 import com.mystichorizonsmc.playerexrebirth.client.network.PrestigeSyncS2CHandler;
-import com.mystichorizonsmc.playerexrebirth.client.toast.PrestigeToastHandler;
 import com.mystichorizonsmc.playerexrebirth.client.ui.PrestigeMenuTab;
-import com.mystichorizonsmc.playerexrebirth.network.packet.PrestigeToastS2CPacket;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.resources.ResourceLocation;
 
@@ -19,12 +17,8 @@ public class PlayerExRebirthClient implements ClientModInitializer {
         ClientPrestigeConfig.load();
         PrestigeSyncS2CHandler.register();
 
-        PlayerExRebirth.NETWORK.registerClientbound(
-                PrestigeToastS2CPacket.class,
-                (packet, access) -> access.runtime().execute(() ->
-                        PrestigeToastHandler.showToast(packet.newPrestigeLevel())
-                )
-        );
+        // Network Sync
+        ClientNetworkHandler.registerClient(PlayerExRebirth.NETWORK);
 
         try {
             PlayerEXMenuRegistry.register(
