@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "playerexrebirth",
+  "version": "${version}",
+  "name": "PlayerEx Rebirth",
+  "description": "...",
+  "authors": ["MysticHorizonsMC"],
+  "contact": {
+    "sources": "https://github.com/MysticHorizonsMC/PlayerExRebirth"
+  },
+  "license": "MIT",
+  "environment": "*",
+
+  "entrypoints": {
+    "main": [
+      "com.mystichorizonsmc.playerexrebirth.PlayerExRebirth"
+    ],
+    "client": [
+      "com.mystichorizonsmc.playerexrebirth.client.PlayerExRebirthClient"
+    ]
+  },
+
+  "cardinal-components": {
+    "cardinal-components-entity": [
+      "com.mystichorizonsmc.playerexrebirth.component.PrestigeComponentPlugin"
+    ]
+  },
+
+  "depends": {
+    "fabricloader": "${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}",
+    "cloth-config": "*",
+    "playerex": "*",
+    "data_attributes": "*",
+    "cardinal-components-base": "*",
+    "cardinal-components-entity": "*",
+    "owo-lib": "*",
+    "placeholder-api": "*"
+  },
+
+  "suggests": {
+    "modmenu": "*"
+  }
+}

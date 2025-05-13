@@ -1,0 +1,39 @@
+{
+  // Max number of times a player can prestige
+  "maxPrestige": 10,
+
+  // Attribute multipliers per prestige level
+  // Format: "attribute_id": multiplier * prestigeLevel
+  "rewards": {
+    "constitution": 0.5,
+    "health_regeneration": 0.1,
+    "lifesteal": 0.1,
+    "dexterity": 1.0,
+    "melee_critical_chance": 0.05
+  },
+
+  // Items to give upon prestige
+  "prestigeItems": [
+    {
+      "item": "minecraft:enchanted_book",
+      "count": 1,
+      "nbt": "{StoredEnchantments:[{id:\"minecraft:sharpness\",lvl:5s}]}"
+    },
+    {
+      "item": "ars_nouveau:source_gem",
+      "count": 32
+    },
+    {
+      "item": "create:brass_hand",
+      "count": 1,
+      "nbt": "{display:{Name:'{\"text\":\"Modded Claw\"}'}}"
+    }
+  ],
+
+  // Commands to run after prestige
+  // Placeholders: <player>, <prestige>
+  "prestigeCommands": [
+    "say Congratulations <player> on reaching prestige <prestige>!",
+    "title <player> title {\"text\":\"You have Prestiged!\",\"color\":\"gold\"}"
+  ]
+}

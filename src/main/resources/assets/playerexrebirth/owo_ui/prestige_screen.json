@@ -1,0 +1,108 @@
+{
+  "type": "flow",
+  "vertical": true,
+  "children": [
+    {
+      "type": "label",
+      "text": "Prestige Level: <level>",
+      "id": "prestige_label",
+      "sizing": {
+        "horizontal": "content",
+        "vertical": "content"
+      },
+      "margins": {
+        "bottom": 5
+      }
+    },
+    {
+      "type": "label",
+      "text": "§6Bonuses:",
+      "id": "bonuses_title",
+      "sizing": {
+        "horizontal": "content",
+        "vertical": "content"
+      }
+    },
+    {
+      "type": "flow",
+      "id": "bonuses_list",
+      "vertical": true,
+      "children": []
+    },
+    {
+      "type": "progress-bar",
+      "id": "prestige_progress",
+      "value": 0.0,
+      "sizing": {
+        "horizontal": "fixed",
+        "vertical": "fixed",
+        "width": 120,
+        "height": 10
+      },
+      "margins": {
+        "top": 6
+      }
+    },
+    {
+      "type": "label",
+      "text": "§cYou must reach level 100 to prestige.",
+      "id": "requirement_warning",
+      "sizing": {
+        "horizontal": "content",
+        "vertical": "content"
+      },
+      "margins": {
+        "top": 8
+      }
+    },
+    {
+      "type": "box",
+      "id": "prestige_button_box",
+      "children": [
+        {
+          "type": "button",
+          "id": "prestige_button",
+          "text": "§6Prestige Now",
+          "sizing": {
+            "horizontal": "fixed",
+            "vertical": "fixed",
+            "width": 120,
+            "height": 20
+          }
+        }
+      ],
+      "sizing": {
+        "horizontal": "fit-content",
+        "vertical": "fit-content"
+      },
+      "margins": {
+        "top": 12
+      }
+    },
+    {
+      "type": "box",
+      "id": "prestige_toast_box",
+      "children": [
+        {
+          "type": "label",
+          "id": "prestige_toast",
+          "text": "",
+          "shadow": true,
+          "horizontal-text-alignment": "right",
+          "sizing": {
+            "horizontal": "fit-content",
+            "vertical": "content"
+          }
+        }
+      ],
+      "margins": {
+        "top": 8,
+        "left": 999
+      },
+      "sizing": {
+        "horizontal": "stretch",
+        "vertical": "content"
+      }
+    }
+  ]
+}
