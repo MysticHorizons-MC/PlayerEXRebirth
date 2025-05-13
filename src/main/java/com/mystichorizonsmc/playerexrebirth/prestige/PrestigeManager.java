@@ -62,6 +62,9 @@ public class PrestigeManager {
         prestige.incrementPrestige();
         int newPrestige = prestige.getPrestigeLevel();
 
+        // Sync component
+        ModComponents.PRESTIGE.sync(player);
+
         // Apply prestige bonuses
         applyPrestigeBonuses(player);
 
