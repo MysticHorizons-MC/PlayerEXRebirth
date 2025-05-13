@@ -22,7 +22,7 @@
 
   "cardinal-components": {
     "cardinal-components-entity": [
-      "com.mystichorizonsmc.playerexrebirth.component.PrestigeComponentPlugin"
+      "com.mystichorizonsmc.playerexrebirth.component.ModComponents"
     ]
   },
 
