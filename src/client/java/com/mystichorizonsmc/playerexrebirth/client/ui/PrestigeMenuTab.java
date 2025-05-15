@@ -17,10 +17,19 @@ public class PrestigeMenuTab extends MenuComponent {
 
     @Override
     public void build(@NotNull FlowLayout root) {
+        // Header Label
         root.child(
-                Components.button(Component.literal("§6Open Prestige Screen"), button -> Minecraft.getInstance().setScreen(new PrestigeScreen()))
-                        .sizing(Sizing.fixed(140), Sizing.fixed(20))
-                        .margins(Insets.of(10))
+                Components.label(Component.translatable("playerexrebirth.ui.menu.prestige"))
+                        .sizing(Sizing.content(), Sizing.fixed(20))
+                        .margins(Insets.of(10, 5, 5, 5))
+        );
+
+        // Button to open PrestigeScreen
+        root.child(
+                Components.button(Component.translatable("playerexrebirth.ui.open_prestige_screen"),
+                                button -> Minecraft.getInstance().setScreen(new PrestigeScreen()))
+                        .sizing(Sizing.fixed(160), Sizing.fixed(20))
+                        .margins(Insets.of(5))
         );
     }
 }

@@ -22,11 +22,14 @@ public class PlayerExRebirthClient implements ClientModInitializer {
 
         try {
             PlayerEXMenuRegistry.register(
-                    new ResourceLocation(PlayerExRebirth.MOD_ID, "prestige_tab"),
+                    new ResourceLocation("playerex", "rebirth_prestige"), // use playerex as namespace
                     PrestigeMenuTab.class
             );
         } catch (Exception e) {
             PlayerExRebirth.LOGGER.error("Failed to register prestige tab", e);
         }
+
+        PlayerExRebirth.LOGGER.info("Registered menu tab IDs:");
+        PlayerEXMenuRegistry.getIds().forEach(id -> PlayerExRebirth.LOGGER.info("- {}.ui.menu.{}", id.getNamespace(), id.getPath()));
     }
 }

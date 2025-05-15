@@ -18,6 +18,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class PrestigeScreen extends BaseUIModelScreen<FlowLayout> {
 
+    private long toastShownAt = -1;
+
     public PrestigeScreen() {
         super(FlowLayout.class, DataSource.asset(ResourceLocation.tryParse(PlayerExRebirth.MOD_ID + ":prestige_screen")));
     }
@@ -30,101 +32,107 @@ public class PrestigeScreen extends BaseUIModelScreen<FlowLayout> {
         int prestigeLevel = ClientPrestigeData.getCurrentPrestigeLevel();
         int requiredLevel = ClientPrestigeData.getMaxPrestigeLevel();
 
-        // --- Prestige Label ---
         LabelComponent prestigeLabel = rootComponent.childById(LabelComponent.class, "prestige_label");
-        prestigeLabel.text(Component.literal(ClientPrestigeConfig.tooltipFormat.replace("<level>", String.valueOf(prestigeLevel))));
+        if (prestigeLabel != null)
+            prestigeLabel.text(Component.translatable("playerexrebirth.ui.prestige_level", prestigeLevel));
 
-        // --- Bonuses ---
         FlowLayout bonusList = rootComponent.childById(FlowLayout.class, "bonuses_list");
-        bonusList.clearChildren(); // Clear stale content if reused
-        PrestigeConfig.rewardMultipliers.forEach((key, multiplier) -> {
-            double value = multiplier * prestigeLevel;
-            String formatted = switch (key) {
-                case "constitution" -> "§a+%.2f Constitution".formatted(value);
-                case "health_regeneration" -> "§d+%.2f Health Regen".formatted(value);
-                case "lifesteal" -> "§c+%.2f Lifesteal".formatted(value);
-                case "dexterity" -> "§b+%.2f Dexterity".formatted(value);
-                case "melee_critical_chance" -> "§e+%.2f Melee Crit Chance".formatted(value);
-                default -> "§7+%.2f %s".formatted(value, key.replace("_", " "));
-            };
-            bonusList.child(Components.label(Component.literal("§7- " + formatted)));
-        });
+        if (bonusList != null) {
+            bonusList.clearChildren();
+            PrestigeConfig.rewardMultipliers.forEach((key, multiplier) -> {
+                double value = multiplier * prestigeLevel;
+                String formatted = switch (key) {
+                    case "constitution" -> "§a+%.2f Constitution".formatted(value);
+                    case "health_regeneration" -> "§d+%.2f Health Regen".formatted(value);
+                    case "lifesteal" -> "§c+%.2f Lifesteal".formatted(value);
+                    case "dexterity" -> "§b+%.2f Dexterity".formatted(value);
+                    case "melee_critical_chance" -> "§e+%.2f Melee Crit Chance".formatted(value);
+                    default -> "§7+%.2f %s".formatted(value, key.replace("_", " "));
+                };
+                bonusList.child(Components.label(Component.literal("§7- " + formatted)));
+            });
+        }
 
-        // --- Progress Bar ---
         ProgressBarComponent progressBar = rootComponent.childById(ProgressBarComponent.class, "prestige_progress");
         if (progressBar != null) {
             float percent = (float) player.experienceLevel / requiredLevel;
             progressBar.setPercentage(Math.min(percent, 1.0f));
+            progressBar.tooltip(Component.literal("%.0f%% to Prestige".formatted(percent * 100)));
         }
 
-        // --- Eligibility ---
         boolean canPrestige = player.experienceLevel >= requiredLevel;
 
-        // --- Warning Label ---
         LabelComponent warning = rootComponent.childById(LabelComponent.class, "requirement_warning");
-        warning.text(canPrestige ? Component.empty() : Component.literal("§cYou must reach level " + requiredLevel + " to prestige."));
+        if (warning != null) {
+            warning.text(canPrestige
+                    ? Component.empty()
+                    : Component.translatable("playerexrebirth.ui.requirement_warning", requiredLevel));
+        }
 
-        // --- Toast ---
         BoxComponent toastBox = rootComponent.childById(BoxComponent.class, "prestige_toast_box");
         LabelComponent toastLabel = rootComponent.childById(LabelComponent.class, "prestige_toast");
 
         if (canPrestige && ClientPrestigeData.shouldShowToast()) {
-            animateToastSlide(toastBox, toastLabel, "§6🎉 You can now prestige!");
+            animateToastSlide(toastBox, toastLabel, Component.translatable("playerexrebirth.ui.toast_ready"));
             ClientPrestigeData.setToastShown();
-        } else {
+        } else if (toastLabel != null) {
             toastLabel.text(Component.empty());
         }
 
-        // --- Prestige Button ---
         ButtonComponent prestigeButton = rootComponent.childById(ButtonComponent.class, "prestige_button");
-        prestigeButton.onPress(button -> Minecraft.getInstance().setScreen(new ConfirmScreen(
-                confirmed -> {
-                    if (confirmed) {
-                        ClientPrestigeRequest.send(); // Send a client-to-server packet to invoke tryPrestige()
-                    } else {
-                        Minecraft.getInstance().setScreen(new PrestigeScreen());
-                    }
-                },
-                Component.literal("Are you sure you want to prestige?"),
-                Component.literal("§cThis will reset your level and stats!")
-        )));
+        if (prestigeButton != null) {
+            prestigeButton.tooltip(Component.translatable("playerexrebirth.ui.tooltip.prestige_button"));
+            prestigeButton.onPress(button -> Minecraft.getInstance().setScreen(new ConfirmScreen(
+                    confirmed -> {
+                        if (confirmed) {
+                            ClientPrestigeRequest.send();
+                        } else {
+                            Minecraft.getInstance().setScreen(new PrestigeScreen());
+                        }
+                    },
+                    Component.translatable("playerexrebirth.ui.confirm_title"),
+                    Component.translatable("playerexrebirth.ui.confirm_warning")
+            )));
+        }
 
-        // --- Glowing Border ---
         BoxComponent box = rootComponent.childById(BoxComponent.class, "prestige_button_box");
+        if (box != null) {
+            if (canPrestige) {
+                box.fill(true);
+                box.direction(BoxComponent.GradientDirection.TOP_TO_BOTTOM);
 
-        if (canPrestige) {
-            box.fill(true);
-            box.direction(BoxComponent.GradientDirection.TOP_TO_BOTTOM);
+                float time = (System.nanoTime() % 1_000_000_000L) / 1_000_000_000f;
+                float alpha = 0.5f + 0.3f * (float) Math.sin(time * 2 * Math.PI);
 
-            float time = (System.currentTimeMillis() % 1000L) / 1000f;
-            float alpha = 0.4f + 0.2f * (float) Math.sin(time * 2 * Math.PI);
-
-            int argb = ((int)(alpha * 255) << 24) | 0xFFD700;
-            box.startColor().set(Color.ofArgb(argb));
-            box.endColor().set(Color.ofArgb(argb));
-        } else {
-            box.fill(false);
+                int argb = ((int) (alpha * 255) << 24) | 0xFFD700;
+                box.startColor().set(Color.ofArgb(argb));
+                box.endColor().set(Color.ofArgb(argb));
+            } else {
+                box.fill(false);
+            }
         }
     }
 
-    private void animateToastSlide(BoxComponent toastBox, LabelComponent toastLabel, String message) {
-        // Move toast offscreen initially
-        toastBox.margins().set(Insets.of(8, 999, 0, 0));
-        toastLabel.text(Component.literal(message));
+    private void animateToastSlide(BoxComponent toastBox, LabelComponent toastLabel, Component message) {
+        if (toastBox == null || toastLabel == null) return;
 
-        // Animate into view over 200ms with smooth easing
+        toastBox.margins().set(Insets.of(8, 999, 0, 0));
+        toastLabel.text(message);
         toastBox.margins().animate(200, Easing.SINE, Insets.of(8, 10, 0, 0));
 
-        // Slide out after 5 seconds
-        new Thread(() -> {
-            try {
-                Thread.sleep(5000); // Wait 5s
-                Minecraft.getInstance().execute(() -> {
-                    toastBox.margins().animate(250, Easing.SINE, Insets.of(8, 999, 0, 0));
-                    toastLabel.text(Component.empty());
-                });
-            } catch (InterruptedException ignored) {}
-        }).start();
-    }
+        toastShownAt = System.currentTimeMillis();
 
+        Minecraft.getInstance().execute(() -> {
+            long delay = 5000;
+            new Thread(() -> {
+                try {
+                    Thread.sleep(delay);
+                    Minecraft.getInstance().execute(() -> {
+                        toastBox.margins().animate(250, Easing.SINE, Insets.of(8, 999, 0, 0));
+                        toastLabel.text(Component.empty());
+                    });
+                } catch (InterruptedException ignored) {}
+            }).start();
+        });
+    }
 }
