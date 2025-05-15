@@ -1,0 +1,13 @@
+{
+  "playerexrebirth.ui.menu.prestige": "Prestige Tab",
+  "playerexrebirth.ui.menu.prestige_tab": "Prestige",
+  "playerex.ui.menu.rebirth_prestige": "Prestige",
+  "playerexrebirth.ui.open_prestige_screen": "Open Prestige Screen",
+  "playerexrebirth.ui.prestige_button": "Prestige",
+  "playerexrebirth.ui.prestige_level": "Prestige Level: %s",
+  "playerexrebirth.ui.requirement_warning": "§cYou must reach level %s to prestige.",
+  "playerexrebirth.ui.toast_ready": "§6🎉 You can now prestige!",
+  "playerexrebirth.ui.confirm_title": "Are you sure you want to prestige?",
+  "playerexrebirth.ui.confirm_warning": "§cThis will reset your level and stats!",
+  "playerexrebirth.ui.tooltip.prestige_button": "Reset your stats and begin a new cycle of power"
+}
