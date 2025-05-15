@@ -4,6 +4,7 @@ import com.mystichorizonsmc.playerexrebirth.config.PrestigeConfig;
 import com.mystichorizonsmc.playerexrebirth.network.PrestigeSyncS2CPacket;
 import io.wispforest.owo.network.OwoNetChannel;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,10 @@ public class PlayerExRebirth implements ModInitializer {
 
         // Network packets
         NetworkHandler.registerCommon(NETWORK);
-        PrestigeSyncS2CPacket.registerJoinSync();
+
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            PrestigeSyncS2CPacket.registerJoinSync(); // <-- safe now
+        });
 
         // Config
         PrestigeConfig.load();

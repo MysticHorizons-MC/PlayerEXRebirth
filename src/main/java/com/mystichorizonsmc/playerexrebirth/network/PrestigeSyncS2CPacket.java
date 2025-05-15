@@ -1,5 +1,6 @@
 package com.mystichorizonsmc.playerexrebirth.network;
 
+import com.mystichorizonsmc.playerexrebirth.PlayerExRebirth;
 import com.mystichorizonsmc.playerexrebirth.component.ModComponents;
 import com.mystichorizonsmc.playerexrebirth.prestige.PrestigeManager;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -25,6 +26,13 @@ public class PrestigeSyncS2CPacket {
     }
 
     public static void registerJoinSync() {
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> send(handler.player));
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            if (ModComponents.PRESTIGE == null) {
+                PlayerExRebirth.LOGGER.error("[PlayerExRebirth] PRESTIGE component was null during JOIN sync!");
+                return;
+            }
+
+            send(handler.player);
+        });
     }
 }
