@@ -13,14 +13,15 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ModComponents implements EntityComponentInitializer {
 
-    public static final ComponentKey<PrestigeComponent> PRESTIGE =
-            ComponentRegistry.getOrCreate(
-                    new ResourceLocation(PlayerExRebirth.MOD_ID, "prestige"),
-                    PrestigeComponent.class
-            );
+    public static ComponentKey<PrestigeComponent> PRESTIGE;
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
+        PRESTIGE = ComponentRegistry.getOrCreate(
+                new ResourceLocation(PlayerExRebirth.MOD_ID, "prestige"),
+                PrestigeComponent.class
+        );
+
         registry.registerForPlayers(
                 PRESTIGE,
                 player -> new DefaultPrestigeComponent(),
