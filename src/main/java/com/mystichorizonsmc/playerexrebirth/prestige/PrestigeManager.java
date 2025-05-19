@@ -6,11 +6,8 @@ import com.mystichorizonsmc.playerexrebirth.PlayerExRebirth;
 import com.mystichorizonsmc.playerexrebirth.component.ModComponents;
 import com.mystichorizonsmc.playerexrebirth.component.PrestigeComponent;
 import com.mystichorizonsmc.playerexrebirth.config.PrestigeConfig;
-import com.mystichorizonsmc.playerexrebirth.network.packet.PrestigeToastS2CPacket;
 import com.mystichorizonsmc.playerexrebirth.utils.PrestigeUtils;
-import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -73,7 +70,7 @@ public class PrestigeManager {
         PrestigeConfig.prestigeItems.forEach(item -> player.getInventory().add(item.copy()));
 
         // Visual + audio feedback
-        triggerPrestigeFeedback(player, newPrestige);
+        triggerPrestigeFeedback(player);
 
         // Final message
         player.sendSystemMessage(Component.literal("§6You have prestiged! Your prestige level is now §e" + newPrestige));
@@ -110,7 +107,18 @@ public class PrestigeManager {
     }
 
     public static void applyPrestigeBonuses(ServerPlayer player) {
+        if (ModComponents.PRESTIGE == null) {
+            PlayerExRebirth.LOGGER.error("[PrestigeManager] ModComponents.PRESTIGE is null! Component registration may have failed.");
+            player.sendSystemMessage(Component.literal("§c[Error] Prestige component not loaded. Please report this to server staff."));
+            return;
+        }
+
         PrestigeComponent prestige = ModComponents.PRESTIGE.get(player);
+        if (prestige == null) {
+            PlayerExRebirth.LOGGER.error("[PrestigeManager] Failed to get PrestigeComponent from player {}", player.getGameProfile().getName());
+            player.sendSystemMessage(Component.literal("§c[Error] Failed to load your prestige data. Try re-logging or contact staff."));
+            return;
+        }
         int prestigeLevel = prestige.getPrestigeLevel();
 
         for (Map.Entry<String, Double> entry : PrestigeConfig.rewardMultipliers.entrySet()) {
@@ -145,7 +153,7 @@ public class PrestigeManager {
         }
     }
 
-    private static void triggerPrestigeFeedback(ServerPlayer player, int prestigeLevel) {
+    private static void triggerPrestigeFeedback(ServerPlayer player) {
         // Sound effect
         player.level().playSound(null, player.blockPosition(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 1.2f, 1.0f);
 
@@ -155,8 +163,9 @@ public class PrestigeManager {
                 player.getX(), player.getY() + 1, player.getZ(),
                 120, 0.5, 1.0, 0.5, 0.05
         );
+    }
 
-        // Toast message via networking
-        PlayerExRebirth.NETWORK.serverHandle(player).send(new PrestigeToastS2CPacket(prestigeLevel));
+    public static int getRequiredLevelToPrestige() {
+        return PrestigeConfig.requiredLevel; // NEW
     }
 }
