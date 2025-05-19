@@ -9,11 +9,12 @@ public class PrestigeSyncS2CHandler {
 
     public static void register() {
         ClientPlayNetworking.registerGlobalReceiver(PrestigeSyncS2CPacket.ID, (client, handler, buf, responseSender) -> {
-            int maxLevel = buf.readVarInt();
+            int effectiveMaxLevel = buf.readVarInt();
             int prestige = buf.readVarInt();
+//            int ignoredRequiredLevel = buf.readVarInt(); // Legacy — now ignored
 
             Minecraft.getInstance().execute(() -> {
-                ClientPrestigeData.setMaxPrestigeLevel(maxLevel);
+                ClientPrestigeData.setEffectiveMaxLevel(effectiveMaxLevel);
                 ClientPrestigeData.setCurrentPrestigeLevel(prestige);
             });
         });
