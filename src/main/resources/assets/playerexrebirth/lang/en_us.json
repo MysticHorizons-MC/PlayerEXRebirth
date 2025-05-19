@@ -9,5 +9,13 @@
   "playerexrebirth.ui.toast_ready": "§6🎉 You can now prestige!",
   "playerexrebirth.ui.confirm_title": "Are you sure you want to prestige?",
   "playerexrebirth.ui.confirm_warning": "§cThis will reset your level and stats!",
-  "playerexrebirth.ui.tooltip.prestige_button": "Reset your stats and begin a new cycle of power"
+  "playerexrebirth.ui.tooltip.prestige_button": "Reset your stats and begin a new cycle of power",
+  "playerexrebirth.ui.screen.title": "§lPrestige Menu",
+  "playerexrebirth.ui.screen.subtitle": "§7Earn new bonuses by prestiging",
+  "playerexrebirth.ui.stats.prestige": "§7Prestige: §a%s§7 / §c%s",
+  "playerexrebirth.ui.stats.level": "§7Level: §b%s§7 / §3%s",
+  "playerexrebirth.ui.bonuses_title": "§6Prestige Bonuses:",
+  "playerexrebirth.ui.prestige_now": "§6Prestige Now",
+  "key.playerexrebirth.open_prestige": "Open Prestige Screen",
+  "key.categories.ui": "UI"
 }
