@@ -27,5 +27,7 @@ public class ModComponents implements EntityComponentInitializer {
                 player -> new DefaultPrestigeComponent(),
                 RespawnCopyStrategy.ALWAYS_COPY
         );
+
+        PlayerExRebirth.LOGGER.info("[Components] Registered PRESTIGE component key.");
     }
 }
