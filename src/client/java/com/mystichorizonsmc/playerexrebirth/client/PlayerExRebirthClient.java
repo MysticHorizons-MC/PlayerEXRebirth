@@ -1,14 +1,20 @@
 package com.mystichorizonsmc.playerexrebirth.client;
 
-import com.bibireden.playerex.registry.PlayerEXMenuRegistry;
+
 import com.mystichorizonsmc.playerexrebirth.PlayerExRebirth;
 import com.mystichorizonsmc.playerexrebirth.client.config.ClientPrestigeConfig;
 import com.mystichorizonsmc.playerexrebirth.client.network.PrestigeSyncS2CHandler;
-import com.mystichorizonsmc.playerexrebirth.client.ui.PrestigeMenuTab;
+import com.mystichorizonsmc.playerexrebirth.client.ui.PrestigeScreen;
 import net.fabricmc.api.ClientModInitializer;
-import net.minecraft.resources.ResourceLocation;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.player.LocalPlayer;
+import org.lwjgl.glfw.GLFW;
 
 public class PlayerExRebirthClient implements ClientModInitializer {
+
+    private static KeyMapping openPrestigeScreenKey;
 
     @Override
     public void onInitializeClient() {
@@ -17,19 +23,25 @@ public class PlayerExRebirthClient implements ClientModInitializer {
         ClientPrestigeConfig.load();
         PrestigeSyncS2CHandler.register();
 
-        // Network Sync
-        ClientNetworkHandler.registerClient(PlayerExRebirth.NETWORK);
+        // Keybind to open prestige screen
+        openPrestigeScreenKey = new KeyMapping("key.playerexrebirth.open_prestige", GLFW.GLFW_KEY_END, "key.categories.ui");
+        net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper.registerKeyBinding(openPrestigeScreenKey);
 
-        try {
-            PlayerEXMenuRegistry.register(
-                    new ResourceLocation("playerex", "rebirth_prestige"), // use playerex as namespace
-                    PrestigeMenuTab.class
-            );
-        } catch (Exception e) {
-            PlayerExRebirth.LOGGER.error("Failed to register prestige tab", e);
-        }
+        // Tick event to check keybind
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (openPrestigeScreenKey.consumeClick()) {
+                LocalPlayer player = Minecraft.getInstance().player;
+                if (player != null) {
+                    String screenPath = "playerexrebirth:prestige_screen";
+                    PlayerExRebirth.LOGGER.info("[Client] Opening PrestigeScreen from UI path: {}", screenPath);
 
-        PlayerExRebirth.LOGGER.info("Registered menu tab IDs:");
-        PlayerEXMenuRegistry.getIds().forEach(id -> PlayerExRebirth.LOGGER.info("- {}.ui.menu.{}", id.getNamespace(), id.getPath()));
+                    try {
+                        Minecraft.getInstance().setScreen(new PrestigeScreen());
+                    } catch (Exception e) {
+                        PlayerExRebirth.LOGGER.error("[Client] Failed to open PrestigeScreen from '{}'", screenPath, e);
+                    }
+                }
+            }
+        });
     }
 }
