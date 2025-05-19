@@ -20,6 +20,7 @@ public class PrestigeConfig {
     public static Map<String, Double> rewardMultipliers = new HashMap<>();
     public static List<ItemStack> prestigeItems = new ArrayList<>();
     public static List<String> prestigeCommands = new ArrayList<>();
+    public static int requiredLevel = 100;
 
     private static final File CONFIG_FILE = FabricLoader.getInstance()
             .getConfigDir()
