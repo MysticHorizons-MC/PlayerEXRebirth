@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<owo-ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/wisp-forest/owo-lib/1.20/owo-ui.xsd">
+
+    <components>
+        <flow-layout id="root" direction="vertical">
+            <children>
+
+                <flow-layout direction="vertical">
+                    <children>
+                        <label id="prestige_label">
+                            <text/>
+                        </label>
+                        <label id="level_label">
+                            <text/>
+                            <margins>
+                                <top>2</top>
+                            </margins>
+                        </label>
+                    </children>
+                </flow-layout>
+
+                <label id="title_label">
+                    <text>§lPrestige Menu</text>
+                    <horizontal-text-alignment>center</horizontal-text-alignment>
+                    <margins>
+                        <top>6</top>
+                    </margins>
+                </label>
+
+                <label id="subtitle_label">
+                    <text>§7Earn new bonuses by prestiging</text>
+                    <horizontal-text-alignment>center</horizontal-text-alignment>
+                    <margins>
+                        <bottom>10</bottom>
+                    </margins>
+                </label>
+
+                <label id="bonuses_title">
+                    <text>§6Prestige Bonuses:</text>
+                    <margins>
+                        <top>6</top>
+                    </margins>
+                </label>
+
+                <flow-layout id="bonuses_list" direction="vertical">
+                    <children/>
+                    <sizing>
+                        <horizontal method="fill">1</horizontal>
+                        <vertical method="content">1</vertical>
+                    </sizing>
+                </flow-layout>
+
+                <flow-layout id="prestige_progress" direction="horizontal">
+                    <children/>
+                    <sizing>
+                        <horizontal method="fixed">300</horizontal>
+                        <vertical method="fixed">8</vertical>
+                    </sizing>
+                    <margins>
+                        <top>10</top>
+                    </margins>
+                    <surface>
+                        <panel/>
+                    </surface>
+                </flow-layout>
+
+                <label id="requirement_warning">
+                    <text/>
+                    <margins>
+                        <top>8</top>
+                    </margins>
+                </label>
+
+                <button id="prestige_button">
+                    <text>§lPrestige</text>
+                    <active>true</active>
+                    <sizing>
+                        <horizontal method="fixed">120</horizontal>
+                        <vertical method="fixed">20</vertical>
+                    </sizing>
+                    <margins>
+                        <top>12</top>
+                    </margins>
+                </button>
+
+                <flow-layout id="prestige_toast_box" direction="vertical">
+                    <children>
+                        <label id="prestige_toast">
+                            <text/>
+                            <horizontal-text-alignment>right</horizontal-text-alignment>
+                        </label>
+                    </children>
+                    <margins>
+                        <top>8</top>
+                        <left>999</left> <!-- Initially hidden -->
+                    </margins>
+                </flow-layout>
+
+                <button id="exit_button">
+                    <text>✕</text>
+                    <active>true</active>
+                    <sizing>
+                        <horizontal method="fixed">16</horizontal>
+                        <vertical method="fixed">16</vertical>
+                    </sizing>
+                    <margins>
+                        <top>4</top>
+                        <left>295</left>
+                    </margins>
+                </button>
+
+            </children>
+
+            <horizontal-alignment>center</horizontal-alignment>
+            <vertical-alignment>top</vertical-alignment>
+            <gap>4</gap>
+            <padding>
+                <vertical>10</vertical>
+                <horizontal>12</horizontal>
+            </padding>
+            <surface>
+                <vanilla-translucent/>
+            </surface>
+        </flow-layout>
+    </components>
+    <templates>
+        <template name="bonus-entry">
+            <label>
+                <text>{{bonus-text}}</text>
+            </label>
+        </template>
+    </templates>
+</owo-ui>
