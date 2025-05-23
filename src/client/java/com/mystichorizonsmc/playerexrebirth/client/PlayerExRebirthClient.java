@@ -3,10 +3,12 @@ package com.mystichorizonsmc.playerexrebirth.client;
 
 import com.mystichorizonsmc.playerexrebirth.PlayerExRebirth;
 import com.mystichorizonsmc.playerexrebirth.client.config.ClientPrestigeConfig;
-import com.mystichorizonsmc.playerexrebirth.client.network.PrestigeSyncS2CHandler;
+import com.mystichorizonsmc.playerexrebirth.client.network.PrestigeSyncS2CPacketClientHandler;
 import com.mystichorizonsmc.playerexrebirth.client.ui.PrestigeScreen;
+import com.mystichorizonsmc.playerexrebirth.network.packet.ClientPrestigeRequest;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.player.LocalPlayer;
@@ -21,7 +23,6 @@ public class PlayerExRebirthClient implements ClientModInitializer {
         PlayerExRebirth.LOGGER.info("[{}] Initializing client-side...", PlayerExRebirth.MOD_ID);
 
         ClientPrestigeConfig.load();
-        PrestigeSyncS2CHandler.register();
 
         // Keybind to open prestige screen
         openPrestigeScreenKey = new KeyMapping("key.playerexrebirth.open_prestige", GLFW.GLFW_KEY_END, "key.categories.ui");
@@ -36,7 +37,7 @@ public class PlayerExRebirthClient implements ClientModInitializer {
                     PlayerExRebirth.LOGGER.info("[Client] Opening PrestigeScreen from UI path: {}", screenPath);
 
                     try {
-                        Minecraft.getInstance().setScreen(new PrestigeScreen());
+                        ClientPrestigeRequest.send();
                     } catch (Exception e) {
                         PlayerExRebirth.LOGGER.error("[Client] Failed to open PrestigeScreen from '{}'", screenPath, e);
                     }
