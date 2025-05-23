@@ -8,6 +8,7 @@ import com.mystichorizonsmc.playerexrebirth.component.PrestigeComponent;
 import com.mystichorizonsmc.playerexrebirth.config.PrestigeConfig;
 import com.mystichorizonsmc.playerexrebirth.utils.PrestigeUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -24,11 +25,12 @@ public class PrestigeManager {
 
     // UUIDs for tracked modifiers
     public static final Map<String, UUID> MODIFIER_UUIDS = Map.of(
-            "constitution", UUID.fromString("6e6f7a71-bc7e-4c9d-b6d3-fb930a71fddb"),
-            "health_regeneration", UUID.fromString("add0b889-7936-456e-a694-d6c0fcb37c02"),
-            "lifesteal", UUID.fromString("96f4022e-2022-4f07-8c16-59b5f8f2a9b9"),
-            "dexterity", UUID.fromString("6a5f87f4-d7ab-4263-9245-9aa3483b9d99"),
-            "melee_critical_chance", UUID.fromString("d2e28f16-26e6-4df1-8d41-4b10a32bba44")
+            "constitution", UUID.fromString("f22df0d3-ea56-4f49-b202-6909a6b6cecf"),
+            "strength", UUID.fromString("06a7393f-e7c2-4d70-a820-4bb81ecde3b0"),
+            "dexterity", UUID.fromString("c17d992e-8ac1-4ff9-a4cc-d43e6094f93d"),
+            "intelligence", UUID.fromString("9f0f43e4-d6e1-4f17-9679-759d9a01d5db"),
+            "luckiness", UUID.fromString("70c0f7cd-e70c-4f9b-8f67-0e24e7b6dbe7"),
+            "focus", UUID.fromString("90d3988e-58c7-4c32-9c8e-4732a1baff6f")
     );
 
     public static void tryPrestige(ServerPlayer player) {
@@ -43,7 +45,7 @@ public class PrestigeManager {
             return;
         }
 
-        PrestigeComponent prestige = ModComponents.PRESTIGE.get(player);
+        PrestigeComponent prestige = ModComponents.get().get(player);
         int prestigeLevel = prestige.getPrestigeLevel();
 
         if (prestigeLevel >= PrestigeConfig.maxPrestige) {
@@ -60,7 +62,7 @@ public class PrestigeManager {
         int newPrestige = prestige.getPrestigeLevel();
 
         // Sync component
-        ModComponents.PRESTIGE.sync(player);
+        ModComponents.get().sync(player);
 
         // Apply prestige bonuses
         applyPrestigeBonuses(player);
@@ -74,6 +76,7 @@ public class PrestigeManager {
 
         // Final message
         player.sendSystemMessage(Component.literal("§6You have prestiged! Your prestige level is now §e" + newPrestige));
+        resetPlayerEXLevel(player);
 
     }
 
@@ -107,13 +110,13 @@ public class PrestigeManager {
     }
 
     public static void applyPrestigeBonuses(ServerPlayer player) {
-        if (ModComponents.PRESTIGE == null) {
+        if (ModComponents.get() == null) {
             PlayerExRebirth.LOGGER.error("[PrestigeManager] ModComponents.PRESTIGE is null! Component registration may have failed.");
             player.sendSystemMessage(Component.literal("§c[Error] Prestige component not loaded. Please report this to server staff."));
             return;
         }
 
-        PrestigeComponent prestige = ModComponents.PRESTIGE.get(player);
+        PrestigeComponent prestige = ModComponents.get().get(player);
         if (prestige == null) {
             PlayerExRebirth.LOGGER.error("[PrestigeManager] Failed to get PrestigeComponent from player {}", player.getGameProfile().getName());
             player.sendSystemMessage(Component.literal("§c[Error] Failed to load your prestige data. Try re-logging or contact staff."));
@@ -127,10 +130,11 @@ public class PrestigeManager {
 
             Attribute attr = switch (key) {
                 case "constitution" -> PlayerEXAttributes.CONSTITUTION;
-                case "health_regeneration" -> PlayerEXAttributes.HEALTH_REGENERATION;
-                case "lifesteal" -> PlayerEXAttributes.LIFESTEAL;
+                case "strength" -> PlayerEXAttributes.STRENGTH;
                 case "dexterity" -> PlayerEXAttributes.DEXTERITY;
-                case "melee_critical_chance" -> PlayerEXAttributes.MELEE_CRITICAL_CHANCE;
+                case "intelligence" -> PlayerEXAttributes.INTELLIGENCE;
+                case "luckiness" -> PlayerEXAttributes.LUCKINESS;
+                case "focus" -> PlayerEXAttributes.FOCUS;
                 default -> null;
             };
 
@@ -167,5 +171,15 @@ public class PrestigeManager {
 
     public static int getRequiredLevelToPrestige() {
         return PrestigeConfig.requiredLevel; // NEW
+    }
+
+    public static void resetPlayerEXLevel(ServerPlayer player) {
+        MinecraftServer server = player.server;
+        String command = "playerex reset " + player.getName().getString();
+
+        server.getCommands().performPrefixedCommand(
+                player.createCommandSourceStack().withPermission(4),
+                command
+        );
     }
 }
