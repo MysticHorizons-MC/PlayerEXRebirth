@@ -1,10 +1,12 @@
 package com.mystichorizonsmc.playerexrebirth;
 
+import com.mystichorizonsmc.playerexrebirth.component.ModComponents;
 import com.mystichorizonsmc.playerexrebirth.config.PrestigeConfig;
 import com.mystichorizonsmc.playerexrebirth.network.PrestigeSyncS2CPacket;
+import com.mystichorizonsmc.playerexrebirth.prestige.PrestigeManager;
 import io.wispforest.owo.network.OwoNetChannel;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +24,21 @@ public class PlayerExRebirth implements ModInitializer {
         // Network packets
         NetworkHandler.registerCommon(NETWORK);
 
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            PrestigeSyncS2CPacket.registerJoinSync(); // <-- safe now
-        });
+        // Join sync
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> server.execute(() -> {
+            var player = handler.player;
+            var component = ModComponents.get().get(player);
+
+            if (component == null) {
+                PlayerExRebirth.LOGGER.error("[JoinSync] PRESTIGE component was null during JOIN sync for '{}'", player.getGameProfile().getName());
+                return;
+            }
+
+            int prestigeLevel = component.getPrestigeLevel();
+            int maxLevel = PrestigeManager.getEffectiveMaxLevel(player);
+
+            PrestigeSyncS2CPacket.send(player, maxLevel, prestigeLevel);
+        }));
 
         // Config
         PrestigeConfig.load();
