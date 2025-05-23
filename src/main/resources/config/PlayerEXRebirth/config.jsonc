@@ -4,12 +4,13 @@
 
   // Attribute multipliers per prestige level
   // Format: "attribute_id": multiplier * prestigeLevel
-  "rewards": {
+  "rewardMultipliers": {
     "constitution": 0.5,
-    "health_regeneration": 0.1,
-    "lifesteal": 0.1,
-    "dexterity": 1.0,
-    "melee_critical_chance": 0.05
+    "strength": 0.7,
+    "dexterity": 0.6,
+    "intelligence": 0.4,
+    "luckiness": 0.3,
+    "focus": 0.8
   },
 
   // Items to give upon prestige
