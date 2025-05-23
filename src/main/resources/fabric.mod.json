@@ -17,12 +17,15 @@
     ],
     "client": [
       "com.mystichorizonsmc.playerexrebirth.client.PlayerExRebirthClient"
+    ],
+    "cardinal-components-entity": [
+      "com.mystichorizonsmc.playerexrebirth.component.ModComponents"
     ]
   },
 
-  "cardinal-components": {
-    "cardinal-components-entity": [
-      "com.mystichorizonsmc.playerexrebirth.component.ModComponents"
+  "custom": {
+    "cardinal-components": [
+      "playerexrebirth:prestige"
     ]
   },
 
