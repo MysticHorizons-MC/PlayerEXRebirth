@@ -52,12 +52,14 @@ public class PrestigeScreen extends BaseUIModelScreen<FlowLayout> {
             double value = multiplier * prestigeLevel;
             String formatted = switch (key) {
                 case "constitution" -> "§a+%.2f Constitution".formatted(value);
-                case "health_regeneration" -> "§d+%.2f Health Regen".formatted(value);
-                case "lifesteal" -> "§c+%.2f Lifesteal".formatted(value);
-                case "dexterity" -> "§b+%.2f Dexterity".formatted(value);
-                case "melee_critical_chance" -> "§e+%.2f Melee Crit Chance".formatted(value);
-                default -> "§7+%.2f %s".formatted(value, key.replace("_", " "));
+                case "strength"     -> "§c+%.2f Strength".formatted(value);
+                case "dexterity"    -> "§b+%.2f Dexterity".formatted(value);
+                case "intelligence" -> "§d+%.2f Intelligence".formatted(value);
+                case "luckiness"    -> "§e+%.2f Luckiness".formatted(value);
+                case "focus"        -> "§6+%.2f Focus".formatted(value);
+                default             -> null; // skip unsupported keys
             };
+            if (formatted == null) return;
 
             var bonusEntry = this.model.expandTemplate(LabelComponent.class,
                     "bonus-entry@playerexrebirth:prestige_screen",
@@ -99,6 +101,7 @@ public class PrestigeScreen extends BaseUIModelScreen<FlowLayout> {
                 confirmed -> {
                     if (confirmed) {
                         ClientPrestigeRequest.send();
+                        Minecraft.getInstance().setScreen(null);
                     } else {
                         Minecraft.getInstance().setScreen(new PrestigeScreen());
                     }
